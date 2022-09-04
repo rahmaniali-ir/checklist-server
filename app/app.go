@@ -36,7 +36,8 @@ func New() (*http.Server, error) {
 		EnvMap = defaultEnv
 	}
 
-	mongoClient, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://alirahmani:Atlas1234@cluster0.a1afj.mongodb.net/?retryWrites=true&w=majority"))
+	mongoCredentials := EnvMap["MONGO_USERNAME"] + ":" + EnvMap["MONGO_PASSWORD"]
+	mongoClient, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://" + mongoCredentials + "@cluster0.a1afj.mongodb.net/?retryWrites=true&w=majority"))
 	if err != nil {
 		panic(err)
 	}
