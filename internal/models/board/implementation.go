@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -39,7 +40,7 @@ func (b *iBoard) List() []Board {
 
 func (b *iBoard) Get(uid string) (*Board, error) {
 	return &Board{
-		Uid: uid,
+		Uid: primitive.NewObjectID(),
 		Title: "",
 		Color: "",
 		Icon: "",
@@ -49,6 +50,25 @@ func (b *iBoard) Get(uid string) (*Board, error) {
 }
 
 func (b *iBoard) Create(board Board) (*Board, error) {
+	boards := b.db.Collection("boards")
+	ctx, _ := context.WithTimeout((context.Background()), 10*time.Second)
+
+	result, err := boards.InsertOne(ctx, bson.D{
+		{ Key: "title", Value: board.Title },
+		{ Key: "color", Value: board.Color },
+		{ Key: "icon", Value: board.Icon },
+		{ Key: "image", Value: board.Image },
+		{ Key: "lists", Value: []CheckList{}},
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if uid, ok := result.InsertedID.(primitive.ObjectID); ok {
+		board.Uid = uid
+	}
+
 	return &board, nil
 }
 

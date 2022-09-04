@@ -1,7 +1,11 @@
 package boardHandler
 
 import (
+	"bytes"
+	"encoding/json"
+
 	"github.com/rahmaniali-ir/checklist-server/internal/http"
+	"github.com/rahmaniali-ir/checklist-server/internal/models/board"
 	boardService "github.com/rahmaniali-ir/checklist-server/internal/services/board"
 )
 
@@ -19,4 +23,12 @@ func New(service boardService.IService) *iHandler {
 
 func (h iHandler) List(req *http.GenericRequest) (interface{}, error) {
 	return (*h.service).List(), nil
+}
+
+func (h iHandler) Create(req *http.GenericRequest) (interface{}, error) {
+	board := board.Board{}
+	reader := bytes.NewReader(req.Body)
+	json.NewDecoder(reader).Decode(&board)
+
+	return (*h.service).Create(board.Title, board.Color, board.Icon)
 }

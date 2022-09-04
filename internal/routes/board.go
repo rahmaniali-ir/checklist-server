@@ -16,5 +16,11 @@ func BoardRoutes(boardHandler boardHandler.IHandler) []router.Route {
 			Method: http.MethodGet,
 			Handler: internalHttp.Handle(boardHandler.List),
 		},
+		{
+			Name: "createBoard",
+			Path: "/board",
+			Method: http.MethodPost,
+			Handler: internalHttp.Handle(boardHandler.Create),
+		},
 	}
 }

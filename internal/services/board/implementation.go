@@ -17,3 +17,11 @@ func New(model board.IBoard) *iService {
 func (s *iService) List() []board.Board {
 	return (*s.model).List()
 }
+
+func (s *iService) Create(title string, color string, icon string) (*board.Board, error) {
+	return (*s.model).Create(board.Board{
+		Title: title,
+		Color: color,
+		Icon: icon,
+	})
+}
