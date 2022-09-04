@@ -77,5 +77,15 @@ func (b *iBoard) Update(board Board) (*Board, error) {
 }
 
 func (b *iBoard) Delete(uid string) error {
-	return nil
+	boards := b.db.Collection("boards")
+	ctx, _ := context.WithTimeout((context.Background()), 10*time.Second)
+
+	objectID, err := primitive.ObjectIDFromHex(uid)
+	if err != nil {
+		return err
+	}
+
+	_, err = boards.DeleteOne(ctx, bson.M{ "_id": objectID })
+
+	return err
 }

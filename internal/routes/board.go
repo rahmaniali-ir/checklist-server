@@ -22,5 +22,11 @@ func BoardRoutes(boardHandler boardHandler.IHandler) []router.Route {
 			Method: http.MethodPost,
 			Handler: internalHttp.Handle(boardHandler.Create),
 		},
+		{
+			Name: "deleteBoard",
+			Path: "/board/{uid}",
+			Method: http.MethodDelete,
+			Handler: internalHttp.Handle(boardHandler.Delete),
+		},
 	}
 }

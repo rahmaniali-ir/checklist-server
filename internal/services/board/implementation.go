@@ -25,3 +25,7 @@ func (s *iService) Create(title string, color string, icon string) (*board.Board
 		Icon: icon,
 	})
 }
+
+func (s *iService) Delete(uid string) (error) {
+	return (*s.model).Delete(uid)
+}

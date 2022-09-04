@@ -32,3 +32,7 @@ func (h iHandler) Create(req *http.GenericRequest) (interface{}, error) {
 
 	return (*h.service).Create(board.Title, board.Color, board.Icon)
 }
+
+func (h iHandler) Delete(req *http.GenericRequest) (interface{}, error) {
+	return nil, (*h.service).Delete(req.PathParams["uid"])
+}
