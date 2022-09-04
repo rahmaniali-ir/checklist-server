@@ -23,12 +23,12 @@ type CheckList struct {
 }
 
 type Board struct {
-	Uid string `json:"uid"`
-	Title string `json:"title"`
-	Color string `json:"color"`
-	Icon string `json:"icon"`
-	Image string `json:"image"`
-	Lists []CheckList `json:"lists"`
+	Uid string `json:"uid" bson:"_id"`
+	Title string `json:"title" bson:"title"`
+	Color string `json:"color" bson:"color"`
+	Icon string `json:"icon" bson:"icon"`
+	Image string `json:"image" bson:"image"`
+	Lists []CheckList `json:"lists" bson:"lists"`
 }
 
 type IBoard interface {

@@ -1,8 +1,10 @@
 package app
 
 import (
+	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -11,6 +13,8 @@ import (
 	"github.com/rahmaniali-ir/checklist-server/internal/router"
 	"github.com/rahmaniali-ir/checklist-server/internal/routes"
 	boardService "github.com/rahmaniali-ir/checklist-server/internal/services/board"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	// "github.com/rahmaniali-ir/checklist-server/pkg/session"
 	// "github.com/syndtr/goleveldb/leveldb"
 )
@@ -32,6 +36,20 @@ func New() (*http.Server, error) {
 		EnvMap = defaultEnv
 	}
 
+	mongoClient, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://alirahmani:Atlas1234@cluster0.a1afj.mongodb.net/?retryWrites=true&w=majority"))
+	if err != nil {
+		panic(err)
+	}
+
+	ctx, _ := context.WithTimeout((context.Background()), 10*time.Second)
+	err = mongoClient.Connect(ctx)
+	if err != nil {
+		panic(err)
+	}
+	// defer mongoClient.Disconnect(ctx)
+
+	checklistDatabase := mongoClient.Database("checklist")
+
 	allRoutes := []router.Route{}
 
 	// dbPath := EnvMap["DB_PATH"]
@@ -41,7 +59,7 @@ func New() (*http.Server, error) {
 	// }
 
 	// board routes
-	bm := board.New()
+	bm := board.New(checklistDatabase)
 	bs := boardService.New(bm)
 	allRoutes = append(allRoutes, routes.BoardRoutes(boardHandler.New(bs))...)
 
