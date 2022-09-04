@@ -1,7 +1,5 @@
 package board
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
-
 type Status int
 const (
 	Status_Undone Status = iota
@@ -25,7 +23,7 @@ type CheckList struct {
 }
 
 type Board struct {
-	Uid primitive.ObjectID `json:"uid" bson:"_id"`
+	Uid string `json:"uid" bson:"_id"`
 	Title string `json:"title" bson:"title"`
 	Color string `json:"color" bson:"color"`
 	Icon string `json:"icon" bson:"icon"`
@@ -37,6 +35,6 @@ type IBoard interface {
 	List() []Board
 	Get(uid string) (*Board, error)
 	Create(board Board) (*Board, error)
-	Update(board Board) (*Board, error)
+	Update(board Board) error
 	Delete(uid string) error
 }

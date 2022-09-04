@@ -40,7 +40,7 @@ func (b *iBoard) List() []Board {
 
 func (b *iBoard) Get(uid string) (*Board, error) {
 	return &Board{
-		Uid: primitive.NewObjectID(),
+		Uid: "",
 		Title: "",
 		Color: "",
 		Icon: "",
@@ -66,14 +66,34 @@ func (b *iBoard) Create(board Board) (*Board, error) {
 	}
 
 	if uid, ok := result.InsertedID.(primitive.ObjectID); ok {
-		board.Uid = uid
+		board.Uid = uid.Hex()
 	}
 
 	return &board, nil
 }
 
-func (b *iBoard) Update(board Board) (*Board, error) {
-	return &board, nil
+func (b *iBoard) Update(board Board) error {
+	boards := b.db.Collection("boards")
+	ctx, _ := context.WithTimeout((context.Background()), 10*time.Second)
+
+	objectID, err := primitive.ObjectIDFromHex(board.Uid)
+	if err != nil {
+		return err
+	}
+
+	_, err = boards.UpdateOne(ctx, bson.M{"_id": objectID}, bson.M{
+		"$set": bson.D{
+			{ Key: "title", Value: board.Title },
+			{ Key: "color", Value: board.Color },
+			{ Key: "icon", Value: board.Icon },
+			{ Key: "image", Value: board.Image },
+		},
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (b *iBoard) Delete(uid string) error {

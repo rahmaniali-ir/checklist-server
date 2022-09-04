@@ -36,3 +36,11 @@ func (h iHandler) Create(req *http.GenericRequest) (interface{}, error) {
 func (h iHandler) Delete(req *http.GenericRequest) (interface{}, error) {
 	return nil, (*h.service).Delete(req.PathParams["uid"])
 }
+
+func (h iHandler) Update(req *http.GenericRequest) (interface{}, error) {
+	board := board.Board{}
+	reader := bytes.NewReader(req.Body)
+	json.NewDecoder(reader).Decode(&board)
+
+	return nil, (*h.service).Update(board)
+}

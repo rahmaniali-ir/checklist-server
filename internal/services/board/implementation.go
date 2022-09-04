@@ -1,29 +1,33 @@
 package boardService
 
-import "github.com/rahmaniali-ir/checklist-server/internal/models/board"
+import model "github.com/rahmaniali-ir/checklist-server/internal/models/board"
 
 type iService struct {
-	model *board.IBoard
+	model *model.IBoard
 }
 
 var _ IService = &iService{}
 
-func New(model board.IBoard) *iService {
+func New(model model.IBoard) *iService {
 	return &iService{
 		model: &model,
 	}
 }
 
-func (s *iService) List() []board.Board {
+func (s *iService) List() []model.Board {
 	return (*s.model).List()
 }
 
-func (s *iService) Create(title string, color string, icon string) (*board.Board, error) {
-	return (*s.model).Create(board.Board{
+func (s *iService) Create(title string, color string, icon string) (*model.Board, error) {
+	return (*s.model).Create(model.Board{
 		Title: title,
 		Color: color,
 		Icon: icon,
 	})
+}
+
+func (s *iService) Update(board model.Board) (error) {
+	return (*s.model).Update(board)
 }
 
 func (s *iService) Delete(uid string) (error) {
